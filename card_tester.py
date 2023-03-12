@@ -37,10 +37,21 @@ def random_expiry(n):
 
 
 creds = []
-for i in range(10):
+successful_card = "4242424242424242"
+declined_card = "4000000000000002"
+
+for i in range(100):
     rand_card_num = random_with_N_digits(16)
+
+    # replace card number with stripe test card
+    if rand_card_num % 10 == 0:
+        rand_card_num_test = successful_card
+    else:
+        rand_card_num_test = declined_card
+
     rand_exp = random_expiry(10)
     rand_cvc = random_with_N_digits(3)
-    creds.append([rand_card_num, rand_exp[0], rand_exp[1], rand_cvc])
+    creds.append([str(rand_card_num), rand_card_num_test,
+                 rand_exp[0], rand_exp[1], rand_cvc])
 
-print(creds[:5])
+print(creds)
