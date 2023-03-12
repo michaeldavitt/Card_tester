@@ -30,7 +30,7 @@ def random_expiry(n):
     """Accepts an integer n and returns an expiry date where month is between 1 and 12 and year is between next year and next year + n"""
     month_list = list(range(1, 13))
     month = random.choice(month_list)
-    next_year = 24
+    next_year = 2024
     year_list = list(range(next_year, next_year + n + 1))
     year = random.choice(year_list)
     return month, year
@@ -40,7 +40,7 @@ creds = []
 successful_card = "4242424242424242"
 declined_card = "4000000000000002"
 
-for i in range(100):
+for i in range(5):
     rand_card_num = random_with_N_digits(16)
 
     # replace card number with stripe test card
@@ -54,4 +54,19 @@ for i in range(100):
     creds.append([str(rand_card_num), rand_card_num_test,
                  rand_exp[0], rand_exp[1], rand_cvc])
 
-print(creds)
+# Plug the card creds into the payment methods API
+payment_methods = []
+for i in range(5):
+    pm_object = stripe.PaymentMethod.create(
+        type="card",
+        card={
+            "number": creds[i][1],
+            "exp_month": creds[i][2],
+            "exp_year": creds[i][3],
+            "cvc": creds[i][4],
+        },
+    )
+
+    payment_methods.append(pm_object.id)
+
+print(payment_methods)
