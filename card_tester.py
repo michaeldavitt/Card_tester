@@ -89,8 +89,10 @@ for i in range(5):
         )
 
     except stripe.error.CardError:
-        print(f"Failed card {creds[i]}")
+        print(
+            f"Failure! Card Number: {creds[i][0]} Card Expiry: {creds[i][2]}/{str(creds[i][3])[2:]} Card CVC: {creds[i][4]}")
 
     else:
-        print(f"Successful card {creds[i]}")
+        print(
+            f"Success! Card Number: {creds[i][0]} Card Expiry: {creds[i][2]}/{str(creds[i][3])[2:]} Card CVC: {creds[i][4]}")
         successful_payment_methods.append(creds[i])
