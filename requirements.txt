@@ -1,0 +1,2 @@
+progress==1.6
+stripe==5.2.0

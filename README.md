@@ -14,3 +14,5 @@ Once a payment method has been attached to a customer, there are two possible ou
 2. The card is successfully attached to the customer - since the card didn't decline, the card tester knows that this card is live, and can be used to commit fraud
 
 Since I do not have access to stolen credit card data, I've used the random library to generate the required credentials (card number, expiry, and CVC code). For each randomly generated credit card, I've made test calls to the three Stripe APIs listed above. Finally, I export the successful cards to a CSV file and disgard the rest
+
+To learn more about card testing, and how Stripe merchants can protect themselves from this kind of fraudulent activity, feel free to take a look at our docs on the subject - https://stripe.com/docs/disputes/prevention/card-testing
