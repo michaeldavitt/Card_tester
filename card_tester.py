@@ -36,38 +36,38 @@ def random_expiry(n):
     return month, year
 
 
-# creds = []
-# successful_card = "4242424242424242"
-# declined_card = "4000000000000002"
+creds = []
+successful_card = "4242424242424242"
+declined_card = "4000000000000002"
 
-# for i in range(5):
-#     rand_card_num = random_with_N_digits(16)
+for i in range(5):
+    rand_card_num = random_with_N_digits(16)
 
-#     # replace card number with stripe test card
-#     if rand_card_num % 10 == 0:
-#         rand_card_num_test = successful_card
-#     else:
-#         rand_card_num_test = declined_card
+    # replace card number with stripe test card
+    if rand_card_num % 10 == 0:
+        rand_card_num_test = successful_card
+    else:
+        rand_card_num_test = declined_card
 
-#     rand_exp = random_expiry(10)
-#     rand_cvc = random_with_N_digits(3)
-#     creds.append([str(rand_card_num), rand_card_num_test,
-#                  rand_exp[0], rand_exp[1], rand_cvc])
+    rand_exp = random_expiry(10)
+    rand_cvc = random_with_N_digits(3)
+    creds.append([str(rand_card_num), rand_card_num_test,
+                 rand_exp[0], rand_exp[1], rand_cvc])
 
 # Plug the card creds into the payment methods API
-# payment_methods = []
-# for i in range(5):
-#     pm_object = stripe.PaymentMethod.create(
-#         type="card",
-#         card={
-#             "number": creds[i][1],
-#             "exp_month": creds[i][2],
-#             "exp_year": creds[i][3],
-#             "cvc": creds[i][4],
-#         },
-#     )
+payment_methods = []
+for i in range(5):
+    pm_object = stripe.PaymentMethod.create(
+        type="card",
+        card={
+            "number": creds[i][1],
+            "exp_month": creds[i][2],
+            "exp_year": creds[i][3],
+            "cvc": creds[i][4],
+        },
+    )
 
-#     payment_methods.append(pm_object.id)
+    payment_methods.append(pm_object.id)
 
 
 # Generate the customer objects
@@ -78,4 +78,19 @@ for i in range(5):
     cus_object = stripe.Customer.create(name=cus_name, email=cus_email)
     customers.append(cus_object.id)
 
-print(customers)
+
+# Attach the payment method objects to the customer objects
+successful_payment_methods = []
+for i in range(5):
+    try:
+        stripe.PaymentMethod.attach(
+            payment_methods[i],
+            customer=customers[i],
+        )
+
+    except stripe.error.CardError:
+        print(f"Failed card {creds[i]}")
+
+    else:
+        print(f"Successful card {creds[i]}")
+        successful_payment_methods.append(creds[i])
