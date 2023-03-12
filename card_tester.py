@@ -7,8 +7,10 @@
 # Attach the payment method objects to the customer objects
 # Store the successful card numbers for future use, and discard the rest
 
+from base64 import encode
 import stripe
 import random
+import csv
 
 with open("keys.txt") as f:
     PASSWORD = ''.join(f.readlines())
@@ -36,11 +38,12 @@ def random_expiry(n):
     return month, year
 
 
+N = 10
 creds = []
 successful_card = "4242424242424242"
 declined_card = "4000000000000002"
 
-for i in range(5):
+for i in range(N):
     rand_card_num = random_with_N_digits(16)
 
     # replace card number with stripe test card
@@ -56,7 +59,7 @@ for i in range(5):
 
 # Plug the card creds into the payment methods API
 payment_methods = []
-for i in range(5):
+for i in range(N):
     pm_object = stripe.PaymentMethod.create(
         type="card",
         card={
@@ -72,7 +75,7 @@ for i in range(5):
 
 # Generate the customer objects
 customers = []
-for i in range(5):
+for i in range(N):
     cus_name = f"Customer #{i+1}"
     cus_email = f"{random_with_N_digits(12)}@gmail.com"
     cus_object = stripe.Customer.create(name=cus_name, email=cus_email)
@@ -81,7 +84,7 @@ for i in range(5):
 
 # Attach the payment method objects to the customer objects
 successful_payment_methods = []
-for i in range(5):
+for i in range(N):
     try:
         stripe.PaymentMethod.attach(
             payment_methods[i],
@@ -96,3 +99,13 @@ for i in range(5):
         print(
             f"Success! Card Number: {creds[i][0]} Card Expiry: {creds[i][2]}/{str(creds[i][3])[2:]} Card CVC: {creds[i][4]}")
         successful_payment_methods.append(creds[i])
+
+
+# Store the successful card numbers for future use, and discard the rest
+header = ["card_number", "card_exp_month", "card_exp_year", "card_cvc"]
+with open("live_cards.csv", "w", encoding="UTF8", newline="") as f:
+    writer = csv.writer(f)
+    writer.writerow(header)
+    for i in range(len(successful_payment_methods)):
+        successful_payment_methods[i].pop(1)
+        writer.writerow(successful_payment_methods[i])
