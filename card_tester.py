@@ -34,3 +34,13 @@ def random_expiry(n):
     year_list = list(range(next_year, next_year + n + 1))
     year = random.choice(year_list)
     return month, year
+
+
+creds = []
+for i in range(10):
+    rand_card_num = random_with_N_digits(16)
+    rand_exp = random_expiry(10)
+    rand_cvc = random_with_N_digits(3)
+    creds.append([rand_card_num, rand_exp[0], rand_exp[1], rand_cvc])
+
+print(creds[:5])
