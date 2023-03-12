@@ -41,7 +41,7 @@ def random_expiry(n):
 
 
 # Number of credentials we want to generate
-N = 100
+N = int(input("How many cards would you like to test: "))
 
 # Stripe test cards (randomly generated 16-digit cards won't work in the testmode API)
 successful_card = "4242424242424242"
